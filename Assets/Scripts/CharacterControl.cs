@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class CharacterControl : MonoBehaviour
 {
     public float moveSpeed;
@@ -9,6 +10,12 @@ public class CharacterControl : MonoBehaviour
     public Animator animator;
 
     public Rigidbody2D rb2D;
+    public float health;
+    public float previousHealth;
+    public float maxHealth;
+    public Image filler;
+    public float counter;
+    public float maxCounter;
 
     // Start is called before the first frame update
     void Start()
@@ -36,5 +43,41 @@ public class CharacterControl : MonoBehaviour
             animator.SetTrigger("Jump");
         }
 
+        if (counter > maxCounter)
+        {
+            previousHealth = health;
+            counter = 0;
+        }
+        else
+        {
+            counter += Time.deltaTime;
+        }
+
+        filler.fillAmount = Mathf.Lerp(previousHealth / maxHealth, health / maxHealth, counter / maxCounter);
+
+
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Trap"))
+        {
+            TakeDamage(20);
+        }
+    }
+
+    void TakeDamage(float dmg)
+    {
+        previousHealth = filler.fillAmount * maxHealth;
+        counter = 0;
+        health -= dmg;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("LevelEnd"))
+        {
+            SceneManager.LoadScene("Map");
+        }
     }
 }

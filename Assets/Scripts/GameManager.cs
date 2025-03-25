@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
 {
 
     public static GameManager manager;
+    public string currentLevel;
 
 
     private void Awake()
