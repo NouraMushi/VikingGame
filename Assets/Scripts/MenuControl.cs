@@ -7,4 +7,13 @@ public class MenuControl : MonoBehaviour
     {
         SceneManager.LoadScene("Map");
     }
+    public void SaveGame()
+    {
+        GameManager.manager.Save();
+    }
+
+    public void LoadGame()
+    {
+        GameManager.manager.Load();
+    }
 }

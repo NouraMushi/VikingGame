@@ -10,9 +10,6 @@ public class CharacterControl : MonoBehaviour
     public Animator animator;
 
     public Rigidbody2D rb2D;
-    public float health;
-    public float previousHealth;
-    public float maxHealth;
     public Image filler;
     public float counter;
     public float maxCounter;
@@ -45,7 +42,7 @@ public class CharacterControl : MonoBehaviour
 
         if (counter > maxCounter)
         {
-            previousHealth = health;
+            GameManager.manager.previousHealth = GameManager.manager.health;
             counter = 0;
         }
         else
@@ -53,7 +50,7 @@ public class CharacterControl : MonoBehaviour
             counter += Time.deltaTime;
         }
 
-        filler.fillAmount = Mathf.Lerp(previousHealth / maxHealth, health / maxHealth, counter / maxCounter);
+        filler.fillAmount = Mathf.Lerp(GameManager.manager.previousHealth / GameManager.manager.maxHealth, GameManager.manager.health / GameManager.manager.maxHealth, counter / maxCounter);
 
 
     }
@@ -68,9 +65,9 @@ public class CharacterControl : MonoBehaviour
 
     void TakeDamage(float dmg)
     {
-        previousHealth = filler.fillAmount * maxHealth;
+        GameManager.manager.previousHealth = filler.fillAmount * GameManager.manager.maxHealth;
         counter = 0;
-        health -= dmg;
+        GameManager.manager.health -= dmg;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

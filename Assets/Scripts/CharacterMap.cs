@@ -13,6 +13,7 @@ public class CharacterMap : MonoBehaviour
     {
         if (GameManager.manager.currentLevel != "")
         {
+            GameObject.Find(GameManager.manager.currentLevel).GetComponent<LoadLevel>().Cleared(true);
             transform.position = GameObject.Find(GameManager.manager.currentLevel).transform.GetChild(0).transform.position;
         }
     }

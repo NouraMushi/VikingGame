@@ -255,6 +255,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337ed2b097fcafe448fe5a00b4234b35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentLevel: 
+  health: 100
+  previousHealth: 100
+  maxHealth: 100
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
