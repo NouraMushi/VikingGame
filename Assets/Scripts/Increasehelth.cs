@@ -20,6 +20,8 @@ public class Increasehelth : MonoBehaviour
                 GameManager.manager.health = GameManager.manager.maxHealth;
             }
             Destroy(gameObject);
+
         }
+
     }
 }

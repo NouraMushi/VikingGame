@@ -18,6 +18,20 @@ public class CharacterControl : MonoBehaviour
     public float counter;
     public float maxCounter;
     private bool isNearBonfire = false;
+    private Vector3 startPosition;
+
+    // public AudioClip footstepSound;
+    public AudioClip jumpSound;
+    private AudioSource audioSource;
+
+
+
+    void Start()
+    {
+        startPosition = transform.position;
+        audioSource = GetComponent<AudioSource>();
+
+    }
 
 
     void Update()
@@ -28,6 +42,11 @@ public class CharacterControl : MonoBehaviour
         {
             transform.localScale = new Vector3(Input.GetAxisRaw("Horizontal"), 1, 1);
             animator.SetBool("Walk", true);
+            if (isGrounded && !audioSource.isPlaying)
+            {
+                // audioSource.clip = footstepSound;
+                audioSource.Play();
+            }
 
         }
         else
@@ -39,6 +58,7 @@ public class CharacterControl : MonoBehaviour
         {
             rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
             animator.SetTrigger("Jump");
+            audioSource.PlayOneShot(jumpSound);
             isGrounded = false;
         }
         if (Input.GetKeyDown(KeyCode.N))
@@ -48,6 +68,7 @@ public class CharacterControl : MonoBehaviour
                 // This part handles the case when the player is on the ground
                 rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
                 animator.SetTrigger("Jump");
+                audioSource.PlayOneShot(jumpSound);
                 isGrounded = false; // Player is now in the air
                 canDoubleJump = true; // Enable double jump
             }
@@ -56,6 +77,7 @@ public class CharacterControl : MonoBehaviour
                 // This part handles the double jump
                 rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
                 animator.SetTrigger("Jump");
+                audioSource.PlayOneShot(jumpSound);
                 canDoubleJump = false; // Disable further double jumps
             }
         }
@@ -82,6 +104,12 @@ public class CharacterControl : MonoBehaviour
                 IncHealth(healingAmount * Time.deltaTime);
             }
         }
+
+        if (transform.position.y < -10f)
+        {
+            Respawn();
+        }
+
 
     }
 
@@ -141,4 +169,14 @@ public class CharacterControl : MonoBehaviour
     {
         GameManager.manager.health += healthValue; // Increase health
     }
+    void Respawn()
+    {
+        rb2D.velocity = Vector2.zero;
+        transform.position = startPosition;
+        GameManager.manager.health -= 5;
+    }
+
+
+
+
 }
