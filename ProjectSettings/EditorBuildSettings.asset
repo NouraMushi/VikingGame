@@ -23,5 +23,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level3.unity
     guid: 24632f9a61a77c441beafe4b791899d5
+  - enabled: 1
+    path: Assets/Scenes/Level4.unity
+    guid: ab876ef1b62272b46a8c62b5d2563934
+  - enabled: 1
+    path: Assets/Scenes/LevelSnow.unity
+    guid: e919555b86075974984affb4d66b5e4f
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

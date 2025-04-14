@@ -6,21 +6,20 @@ using UnityEngine.SceneManagement;
 public class CharacterControl : MonoBehaviour
 {
     public float moveSpeed;
+    [Range(1, 10)]
     public float jumpForce;
-    public Animator animator;
-
     public Rigidbody2D rb2D;
+    private bool isGrounded;
+
+    public bool canDoubleJump;
+
+    public Animator animator;
     public Image filler;
     public float counter;
     public float maxCounter;
+    private bool isNearBonfire = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
-
-    // Update is called once per frame
     void Update()
     {
         transform.Translate(Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime, 0, 0);
@@ -29,16 +28,39 @@ public class CharacterControl : MonoBehaviour
         {
             transform.localScale = new Vector3(Input.GetAxisRaw("Horizontal"), 1, 1);
             animator.SetBool("Walk", true);
+
         }
         else
         {
             animator.SetBool("Walk", false);
         }
-        if (Input.GetButtonDown("Jump"))
+
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            rb2D.velocity = new Vector2(0, jumpForce);
+            rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
             animator.SetTrigger("Jump");
+            isGrounded = false;
         }
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            if (isGrounded)
+            {
+                // This part handles the case when the player is on the ground
+                rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
+                animator.SetTrigger("Jump");
+                isGrounded = false; // Player is now in the air
+                canDoubleJump = true; // Enable double jump
+            }
+            else if (canDoubleJump)
+            {
+                // This part handles the double jump
+                rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
+                animator.SetTrigger("Jump");
+                canDoubleJump = false; // Disable further double jumps
+            }
+        }
+
+
 
         if (counter > maxCounter)
         {
@@ -52,6 +74,14 @@ public class CharacterControl : MonoBehaviour
 
         filler.fillAmount = Mathf.Lerp(GameManager.manager.previousHealth / GameManager.manager.maxHealth, GameManager.manager.health / GameManager.manager.maxHealth, counter / maxCounter);
 
+        if (isNearBonfire)
+        {
+            int healingAmount = 10;
+            if (GameManager.manager.health < GameManager.manager.maxHealth)
+            {
+                IncHealth(healingAmount * Time.deltaTime);
+            }
+        }
 
     }
 
@@ -61,8 +91,27 @@ public class CharacterControl : MonoBehaviour
         {
             TakeDamage(20);
         }
+        else if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+        }
     }
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
 
+        }
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+
+            isGrounded = false;
+        }
+    }
     void TakeDamage(float dmg)
     {
         GameManager.manager.previousHealth = filler.fillAmount * GameManager.manager.maxHealth;
@@ -76,5 +125,20 @@ public class CharacterControl : MonoBehaviour
         {
             SceneManager.LoadScene("Map");
         }
+        if (collision.CompareTag("Bonfire"))
+        {
+            isNearBonfire = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Bonfire"))
+        {
+            isNearBonfire = false;
+        }
+    }
+    public void IncHealth(float healthValue)
+    {
+        GameManager.manager.health += healthValue; // Increase health
     }
 }
