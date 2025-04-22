@@ -56,7 +56,7 @@ public class CharacterControl : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
+            rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, jumpForce);
             animator.SetTrigger("Jump");
             audioSource.PlayOneShot(jumpSound);
             isGrounded = false;
@@ -66,7 +66,7 @@ public class CharacterControl : MonoBehaviour
             if (isGrounded)
             {
                 // This part handles the case when the player is on the ground
-                rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
+                rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, jumpForce);
                 animator.SetTrigger("Jump");
                 audioSource.PlayOneShot(jumpSound);
                 isGrounded = false; // Player is now in the air
@@ -75,7 +75,7 @@ public class CharacterControl : MonoBehaviour
             else if (canDoubleJump)
             {
                 // This part handles the double jump
-                rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
+                rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, jumpForce);
                 animator.SetTrigger("Jump");
                 audioSource.PlayOneShot(jumpSound);
                 canDoubleJump = false; // Disable further double jumps
@@ -171,7 +171,7 @@ public class CharacterControl : MonoBehaviour
     }
     void Respawn()
     {
-        rb2D.velocity = Vector2.zero;
+        rb2D.linearVelocity = Vector2.zero;
         transform.position = startPosition;
         GameManager.manager.health -= 5;
     }
